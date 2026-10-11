@@ -16,3 +16,5 @@ docker run --name es_01 \
 -e "xpack.security.enabled=false" \
 -v elasticsearch-data:/usr/share/elasticsearch/data \
 -it -m 1GB docker.elastic.co/elasticsearch/elasticsearch:9.5.4
+
+IGNORE the " \ " while running the docker command
