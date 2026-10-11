@@ -3,6 +3,7 @@ package com.example.Service;
 import com.example.DTO.QuestionRequestDTO;
 import com.example.DTO.QuestionResponseDTO;
 import com.example.Entity.Question;
+import com.example.Entity.QuestionElasticDocument;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -16,5 +17,5 @@ public interface IQuestionService {
 
      public Flux<QuestionResponseDTO> getAllQuestions();
 
-     public Flux<QuestionResponseDTO> searchQuestion(String searchQuery);
+     public List<QuestionElasticDocument> searchQuestion(String searchQuery);
 }

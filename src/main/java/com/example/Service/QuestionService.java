@@ -3,6 +3,7 @@ package com.example.Service;
 
 import com.example.DTO.QuestionRequestDTO;
 import com.example.DTO.QuestionResponseDTO;
+import com.example.Entity.QuestionElasticDocument;
 import com.example.Events.ViewCountEvent;
 import com.example.Mapper.QuestionMapper;
 import com.example.Producer.KafkaProducer;
@@ -13,6 +14,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 
 @Service
@@ -22,18 +24,25 @@ public class QuestionService implements IQuestionService{
     private final IAnswerService answerService;
     private final KafkaProducer kafkaProducer;
     private final SearchRepo searchRepo;
+    private final IQuestionIndexService questionIndexService;
 
-    public QuestionService(QuestionRepo questionRepo, IAnswerService answerService, KafkaProducer kafkaProducer, SearchRepo searchRepo) {
+    public QuestionService(QuestionRepo questionRepo, IAnswerService answerService, KafkaProducer kafkaProducer, SearchRepo searchRepo, IQuestionIndexService questionIndexService) {
         this.questionRepo = questionRepo;
         this.answerService = answerService;
         this.kafkaProducer = kafkaProducer;
         this.searchRepo = searchRepo;
+        this.questionIndexService = questionIndexService;
     }
 
     @Override
     public Mono<QuestionResponseDTO> createQuestion(QuestionRequestDTO questionRequestDTO) {
         return questionRepo.save(QuestionMapper.toQuestion(questionRequestDTO))
-               .map(QuestionMapper::toQuestionResponseDTO);
+//               .map(QuestionMapper::toQuestionResponseDTO);
+                .map(question -> {
+                    //Dumping the Data in Elastic Search
+                    questionIndexService.createQuestionIndex(question);
+                    return  QuestionMapper.toQuestionResponseDTO(question);
+                });
     }
 
     @Override
@@ -70,7 +79,7 @@ public class QuestionService implements IQuestionService{
     }
 
     @Override
-    public Flux<QuestionResponseDTO> searchQuestion(String searchQuery) {
+    public List<QuestionElasticDocument> searchQuestion(String searchQuery) {
         return searchRepo.findByTitleContainingOrContentContaining(searchQuery,searchQuery);
     }
 }

@@ -2,11 +2,14 @@ package com.example.Controller;
 
 import com.example.DTO.QuestionRequestDTO;
 import com.example.DTO.QuestionResponseDTO;
+import com.example.Entity.QuestionElasticDocument;
 import com.example.Service.IQuestionService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/quora/question")
@@ -38,8 +41,8 @@ public class QuestionController {
                 .doOnComplete(() -> System.out.println("All Questions Retrieved Successfully"));
     }
 
-    @GetMapping()
-    public Flux<QuestionResponseDTO> searchQuestion(@RequestParam String searchQuery){
+    @GetMapping("/search")
+    public List<QuestionElasticDocument> searchQuestion(@RequestParam String searchQuery){
         return questionService.searchQuestion(searchQuery);
     }
 

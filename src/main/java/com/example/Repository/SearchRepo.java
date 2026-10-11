@@ -1,16 +1,14 @@
 package com.example.Repository;
 
-import com.example.Entity.SearchQuestionByElasticSearch;
-import org.springframework.data.repository.CrudRepository;
+import com.example.Entity.QuestionElasticDocument;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import org.springframework.stereotype.Repository;
-import reactor.core.publisher.Flux;
 
 import java.util.List;
 
 @Repository
-public interface SearchRepo extends ReactiveCrudRepository<SearchQuestionByElasticSearch, Long> {
+public interface SearchRepo extends ReactiveCrudRepository<QuestionElasticDocument, Long> {
 
-    List<SearchQuestionByElasticSearch>findByTitleContainingOrContentContaining(String title, String content);
+    List<QuestionElasticDocument>findByTitleContainingOrContentContaining(String title, String content);
 
 }
